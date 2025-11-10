@@ -34,6 +34,7 @@ function mostrarFormulario() {
 function ocultarFormulario() {
     document.querySelector('main').classList.remove('form-show')
     criarContatos()
+    limparFormulario()
 }
 
 document.getElementById('novo-contato').addEventListener('click', mostrarFormulario)
@@ -50,13 +51,6 @@ async function salvarContato() {
     }
 
     await criarContato(novoContato)
-
-    document.getElementById('nome').value = ''
-    document.getElementById('celular').value = ''
-    document.getElementById('preview-image').src = ''
-    document.getElementById('email').value = ''
-    document.getElementById('endereco').value = ''
-    document.getElementById('cidade').value = ''
 }
 
 document.getElementById('salvar').addEventListener('click', async () => {
@@ -64,3 +58,11 @@ document.getElementById('salvar').addEventListener('click', async () => {
     ocultarFormulario()
 })
 
+function limparFormulario() {
+    document.getElementById('nome').value = ''
+    document.getElementById('celular').value = ''
+    document.getElementById('preview-image').src = ''
+    document.getElementById('email').value = ''
+    document.getElementById('endereco').value = ''
+    document.getElementById('cidade').value = ''
+}
