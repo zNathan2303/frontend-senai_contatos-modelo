@@ -11,9 +11,17 @@ function criarCard(contato) {
     const numero = document.createElement('p')
 
     card.classList.add('card-contato')
+    card.dataset.id = contato.id
     imagem.src = contato.foto || 'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png'
     nome.textContent = contato.nome
     numero.textContent = contato.celular
+
+    card.addEventListener('click', async () => {
+        const id = card.dataset.id
+        localStorage.setItem('id', card.dataset.id)
+        const contatoRetornado = await buscarContatoPorId(id)
+        mostrarDadosDoContatoNoFormulario(contatoRetornado)
+    })
 
     card.append(imagem, nome, numero)
     container.append(card)
@@ -33,12 +41,23 @@ function mostrarFormulario() {
 
 function ocultarFormulario() {
     document.querySelector('main').classList.remove('form-show')
-    criarContatos()
     limparFormulario()
+    criarContatos()
+    habilitarCamposDoFormulario()
 }
 
 document.getElementById('novo-contato').addEventListener('click', mostrarFormulario)
 document.getElementById('cancelar').addEventListener('click', ocultarFormulario)
+document.getElementById('editar').addEventListener('click', habilitarCamposDoFormulario)
+document.getElementById('salvar').addEventListener('click', async () => {
+    await salvarContato()
+    ocultarFormulario()
+})
+document.getElementById('deletar').addEventListener('click', async () => {
+    await deletarContato(localStorage.getItem('id'))
+    localStorage.removeItem('id')
+    ocultarFormulario()
+})
 
 async function salvarContato() {
     const novoContato = {
@@ -53,11 +72,6 @@ async function salvarContato() {
     await criarContato(novoContato)
 }
 
-document.getElementById('salvar').addEventListener('click', async () => {
-    await salvarContato()
-    ocultarFormulario()
-})
-
 function limparFormulario() {
     document.getElementById('nome').value = ''
     document.getElementById('celular').value = ''
@@ -66,3 +80,33 @@ function limparFormulario() {
     document.getElementById('endereco').value = ''
     document.getElementById('cidade').value = ''
 }
+
+function desabilitarCamposDoFormulario() {
+    document.getElementById('nome').disabled = true
+    document.getElementById('celular').disabled = true
+    document.getElementById('preview-image').disabled = true
+    document.getElementById('email').disabled = true
+    document.getElementById('endereco').disabled = true
+    document.getElementById('cidade').disabled = true
+}
+
+function habilitarCamposDoFormulario() {
+    document.getElementById('nome').disabled = false
+    document.getElementById('celular').disabled = false
+    document.getElementById('preview-image').disabled = false
+    document.getElementById('email').disabled = false
+    document.getElementById('endereco').disabled = false
+    document.getElementById('cidade').disabled = false
+}
+
+function mostrarDadosDoContatoNoFormulario(contato) {
+    mostrarFormulario()
+    desabilitarCamposDoFormulario()
+    document.getElementById('nome').value = contato.nome
+    document.getElementById('celular').value = contato.celular
+    document.getElementById('preview-image').src = contato.foto
+    document.getElementById('email').value = contato.email
+    document.getElementById('endereco').value = contato.endereco
+    document.getElementById('cidade').value = contato.cidade
+}
+
