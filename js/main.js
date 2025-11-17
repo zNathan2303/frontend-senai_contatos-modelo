@@ -2,6 +2,8 @@
 
 import { lerContatos, criarContato, deletarContato, atualizarContato, buscarContatoPorId } from "./contatos.js"
 
+await criarContatos()
+
 function criarCard(contato) {
     const container = document.getElementById('container')
 
@@ -31,8 +33,6 @@ async function criarContatos() {
     const contatos = await lerContatos()
     contatos.forEach(criarCard)
 }
-
-await criarContatos()
 
 function mostrarFormulario() {
     document.getElementById('container').replaceChildren()
@@ -72,6 +72,19 @@ async function salvarContato() {
     await criarContato(novoContato)
 }
 
+async function atualizarDadosContato(id) {
+    const contato = {
+        nome: document.getElementById('nome').value,
+        celular: document.getElementById('celular').value,
+        foto: document.getElementById('preview-image').value,
+        email: document.getElementById('email').value,
+        endereco: document.getElementById('endereco').value,
+        cidade: document.getElementById('cidade').value
+    }
+
+    atualizarContato(id, contato)
+}
+
 function limparFormulario() {
     document.getElementById('nome').value = ''
     document.getElementById('celular').value = ''
@@ -109,4 +122,3 @@ function mostrarDadosDoContatoNoFormulario(contato) {
     document.getElementById('endereco').value = contato.endereco
     document.getElementById('cidade').value = contato.cidade
 }
-
