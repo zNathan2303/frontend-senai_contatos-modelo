@@ -48,10 +48,21 @@ function ocultarFormulario() {
 
 document.getElementById('novo-contato').addEventListener('click', mostrarFormulario)
 document.getElementById('cancelar').addEventListener('click', ocultarFormulario)
-document.getElementById('editar').addEventListener('click', habilitarCamposDoFormulario)
+document.getElementById('editar').addEventListener('click', () => {
+    habilitarCamposDoFormulario()
+    localStorage.setItem('editando', 'true')
+})
 document.getElementById('salvar').addEventListener('click', async () => {
-    await salvarContato()
-    ocultarFormulario()
+    if (localStorage.getItem('editando') == 'true') {
+        localStorage.removeItem('editando')
+        await atualizarDadosContato(localStorage.getItem('id'))
+        setTimeout(() => {
+            ocultarFormulario()
+        }, 500);
+    } else {
+        await salvarContato()
+        ocultarFormulario()
+    }
 })
 document.getElementById('deletar').addEventListener('click', async () => {
     await deletarContato(localStorage.getItem('id'))
